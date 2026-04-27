@@ -1,0 +1,22 @@
+use clap::Subcommand;
+use enum_dispatch::enum_dispatch;
+
+mod subscription;
+mod switch;
+
+#[enum_dispatch]
+pub trait Exec {
+    /// execute the command
+    fn exec(self) -> anyhow::Result<()>;
+}
+
+#[derive(Subcommand, Debug)]
+#[enum_dispatch(Exec)]
+pub enum Command {
+    /// Switch configs
+    Switch(switch::Switch),
+
+    /// Manage subscriptions
+    #[command(visible_aliases(["sub", "s"]))]
+    Subscription(subscription::Subscription),
+}
