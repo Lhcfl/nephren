@@ -80,10 +80,23 @@ impl Config {
             .join(".config/nephren/config.json");
         Ok(ret)
     }
+
+    pub fn find_subscription(&self, id_or_name: &str) -> Option<usize> {
+        self.subscriptions
+            .iter()
+            .position(|sub| sub.id.matches(id_or_name))
+            .or_else(|| {
+                self.subscriptions
+                    .iter()
+                    .position(|sub| sub.name == id_or_name)
+            })
+    }
 }
 
 impl WithContext<'_, Config> {
     pub fn save(&self) -> anyhow::Result<()> {
+        self.mut_mark.set(false);
+
         match self.ctx.config_path.as_deref() {
             Some(x) => self.data.write_into(x),
             None => self.data.write_into(Config::default_config_path()?),

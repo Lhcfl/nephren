@@ -1,9 +1,10 @@
-use crate::commands::Exec;
 use crate::context::Context;
+use crate::{commands::Exec, models::subscription::SubscriptionId};
 use anyhow::bail;
 use clap::{Args, ValueEnum};
 use log::error;
-use tabled::Table;
+use tabled::settings::Style;
+use tabled::{Table, Tabled};
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
 enum ListStyle {
@@ -18,13 +19,32 @@ pub struct List {
     style: ListStyle,
 }
 
+#[derive(Tabled)]
+struct SubscriptionRow {
+    id: SubscriptionId,
+    name: String,
+    url: String,
+    description: String,
+    enable_update: &'static str,
+}
+
 impl Exec for List {
     fn exec(self, ctx: Context) -> anyhow::Result<()> {
         let config = ctx.load_config()?;
 
         match self.style {
             ListStyle::Table => {
-                let table = Table::new(&config.subscriptions);
+                let mut table =
+                    Table::new(config.subscriptions.iter().map(|row| SubscriptionRow {
+                        id: row.id,
+                        name: row.name.clone(),
+                        url: row.url.clone().unwrap_or_else(|| "<none>".to_string()),
+                        description: row.description.clone(),
+                        enable_update: if row.enable_update { "√" } else { "" },
+                    }));
+
+                table.with(Style::modern_rounded());
+
                 println!("{table}");
             }
             ListStyle::Json => {

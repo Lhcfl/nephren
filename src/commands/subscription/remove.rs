@@ -13,16 +13,7 @@ impl Exec for Remove {
     fn exec(self, ctx: Context) -> anyhow::Result<()> {
         let mut config = ctx.load_config()?;
 
-        let matched_index = config
-            .subscriptions
-            .iter()
-            .position(|sub| sub.id.matches(&self.id_or_name))
-            .or_else(|| {
-                config
-                    .subscriptions
-                    .iter()
-                    .position(|sub| sub.name == self.id_or_name)
-            });
+        let matched_index = config.find_subscription(&self.id_or_name);
 
         if let Some(index) = matched_index {
             let matched = config.subscriptions.remove(index);

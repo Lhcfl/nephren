@@ -21,6 +21,7 @@ pub enum Cmd {
     /// Add a new subscription
     Add(add::Add),
     /// Remove a subscription
+    #[command(visible_aliases(["rm", "r"]))]
     Remove(remove::Remove),
     /// Pull updates for a subscription
     Pull(pull::Pull),

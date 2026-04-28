@@ -6,7 +6,7 @@ use log::error;
 
 #[derive(Debug, Args)]
 pub struct Add {
-    url: String,
+    url: Option<String>,
 
     #[arg(long)]
     offline: bool,

@@ -23,11 +23,11 @@ impl SubscriptionId {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Tabled)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Subscription {
     pub id: SubscriptionId,
     pub name: String,
-    pub url: String,
+    pub url: Option<String>,
     pub enable_update: bool,
     pub description: String,
 }
