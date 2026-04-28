@@ -20,10 +20,6 @@ impl NodeId {
     pub fn next(self) -> NodeId {
         NodeId(self.0 + 1)
     }
-
-    pub fn matches(&self, query: &str) -> bool {
-        self.0.to_string() == query
-    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]

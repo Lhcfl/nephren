@@ -6,8 +6,9 @@ use simple_logger::SimpleLogger;
 
 mod commands;
 mod context;
-mod lib;
+mod inter;
 mod models;
+mod parse;
 
 #[derive(Parser, Debug)]
 struct Args {
