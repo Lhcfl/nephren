@@ -1,13 +1,15 @@
 use clap::Subcommand;
 use enum_dispatch::enum_dispatch;
 
+use crate::context::Context;
+
 mod subscription;
 mod switch;
 
 #[enum_dispatch]
 pub trait Exec {
     /// execute the command
-    fn exec(self) -> anyhow::Result<()>;
+    fn exec(self, ctx: Context) -> anyhow::Result<()>;
 }
 
 #[derive(Subcommand, Debug)]

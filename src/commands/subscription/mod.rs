@@ -1,5 +1,7 @@
 use crate::commands::Exec;
+use crate::context::Context;
 use clap::{Args, Subcommand};
+use enum_dispatch::enum_dispatch;
 
 pub mod add;
 pub mod list;
@@ -19,11 +21,11 @@ pub enum Cmd {
 }
 
 impl Exec for Subscription {
-    fn exec(self) -> anyhow::Result<()> {
+    fn exec(self, ctx: Context) -> anyhow::Result<()> {
         match self.cmd {
-            Cmd::List(x) => x.exec(),
-            Cmd::Add(x) => x.exec(),
-            Cmd::Pull(x) => x.exec(),
+            Cmd::List(x) => x.exec(ctx),
+            Cmd::Add(x) => x.exec(ctx),
+            Cmd::Pull(x) => x.exec(ctx),
         }
     }
 }

@@ -1,4 +1,5 @@
 use crate::commands::Exec;
+use crate::context::Context;
 use anyhow::bail;
 use clap::{Args, Subcommand};
 use log::error;
@@ -9,7 +10,7 @@ pub struct Pull {
 }
 
 impl Exec for Pull {
-    fn exec(self) -> anyhow::Result<()> {
+    fn exec(self, ctx: Context) -> anyhow::Result<()> {
         bail!("not implemented")
     }
 }

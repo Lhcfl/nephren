@@ -1,4 +1,5 @@
 use crate::commands::Exec;
+use crate::context::Context;
 use anyhow::bail;
 use clap::Args;
 use log::error;
@@ -9,7 +10,7 @@ pub struct Switch {
 }
 
 impl Exec for Switch {
-    fn exec(self) -> anyhow::Result<()> {
+    fn exec(self, ctx: Context) -> anyhow::Result<()> {
         error!("not implemented!");
         panic!("bad implement");
     }

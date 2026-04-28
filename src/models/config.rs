@@ -1,10 +1,12 @@
 use std::{
     env,
-    fs::{self, File},
+    fs::{self, File, OpenOptions},
     io::ErrorKind,
+    path::{Path, PathBuf},
 };
 
-use log::info;
+use anyhow::Context;
+use log::{debug, info};
 use serde::{Deserialize, Serialize};
 
 use crate::models::{
@@ -14,64 +16,65 @@ use crate::models::{
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Config {
-    subscriptions: Vec<Subscription>,
-    nodes: Vec<Node>,
-    active_node: Option<NodeId>,
+    pub subscriptions: Vec<Subscription>,
+    pub nodes: Vec<Node>,
+    pub active_node: Option<NodeId>,
 }
 
-pub enum ConfigLoadError {
-    DeserializeError(String),
-    NotFound,
-    FileSystemError(String),
+impl Default for Config {
+    fn default() -> Self {
+        Config {
+            subscriptions: vec![],
+            nodes: vec![],
+            active_node: None,
+        }
+    }
 }
 
 impl Config {
-    pub fn load() -> Result<Config, ConfigLoadError> {
-        let Some(home) = env::home_dir() else {
-            panic!("failed to get your home dir. your system may not be supported.");
-        };
-
-        let path = home.join("/.config/nephren/config.json");
-
-        let file = File::open(path).map_err(|err| {
-            use ConfigLoadError::*;
-            match err.kind() {
-                ErrorKind::NotFound => NotFound,
-                _ => FileSystemError(err.to_string()),
-            }
-        })?;
-
-        serde_json::from_reader(file)
-            .map_err(|err| ConfigLoadError::DeserializeError(err.to_string()))
+    pub fn load<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
+        let path = path.as_ref();
+        let file = File::open(path)?;
+        Ok(serde_json::from_reader(file)?)
     }
 
-    pub fn load_or_generate() -> Config {
-        use ConfigLoadError::*;
+    pub fn generate<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
+        let path = path.as_ref();
+        let config = Config::default();
+        config.write_into(path)?;
+        Ok(config)
+    }
 
-        Config::load().unwrap_or_else(|e| match e {
-            DeserializeError(msg) => {
-                eprintln!("======= UNRECOVERABLE ERROR OCURRERS! ========");
-                eprintln!("{msg}");
-                panic!("cannot deserialize config.")
-            }
-            FileSystemError(msg) => {
-                eprintln!("======= UNRECOVERABLE ERROR OCURRERS! ========");
-                eprintln!("{msg}");
-                panic!("unhandled filesystem error.")
-            }
-            NotFound => {
-                info!("no config file detected. creating one...");
+    pub fn write_into<P: AsRef<Path>>(&self, path: P) -> anyhow::Result<()> {
+        let path = path.as_ref();
+        // recursively create parent dir
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        let file = OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .create(true)
+            .open(path)?;
+        serde_json::to_writer_pretty(file, self)?;
+        Ok(())
+    }
 
-                let ret = Config {
-                    subscriptions: vec![],
-                    nodes: vec![],
-                    active_node: None,
-                };
+    pub fn load_or_generate<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
+        let path = path.as_ref();
+        if fs::exists(&path)? {
+            debug!("config file exists at {path:?}, loading it");
+            Self::load(&path)
+        } else {
+            debug!("config file does not exist at {path:?}, generating it");
+            Self::generate(&path)
+        }
+    }
 
-                // serde_json::to_writer();
-
-                ret
-            }
-        })
+    pub fn default_config_path() -> anyhow::Result<PathBuf> {
+        let ret = env::home_dir()
+            .context("failed to get your home dir. your system may not be supported.")?
+            .join(".config/nephren/config.json");
+        Ok(ret)
     }
 }
