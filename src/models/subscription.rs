@@ -1,6 +1,7 @@
 use std::fmt::Display;
 
 use serde::{Deserialize, Serialize};
+use tabled::Tabled;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 #[serde(transparent)]
@@ -16,9 +17,13 @@ impl SubscriptionId {
     pub fn next(self) -> SubscriptionId {
         SubscriptionId(self.0 + 1)
     }
+
+    pub fn matches(&self, query: &str) -> bool {
+        self.0.to_string() == query
+    }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Tabled)]
 pub struct Subscription {
     pub id: SubscriptionId,
     pub name: String,

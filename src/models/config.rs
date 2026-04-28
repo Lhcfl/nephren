@@ -9,9 +9,12 @@ use anyhow::Context;
 use log::{debug, info};
 use serde::{Deserialize, Serialize};
 
-use crate::models::{
-    node::{Node, NodeId},
-    subscription::Subscription,
+use crate::{
+    context::WithContext,
+    models::{
+        node::{Node, NodeId},
+        subscription::Subscription,
+    },
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -76,5 +79,14 @@ impl Config {
             .context("failed to get your home dir. your system may not be supported.")?
             .join(".config/nephren/config.json");
         Ok(ret)
+    }
+}
+
+impl WithContext<'_, Config> {
+    pub fn save(&self) -> anyhow::Result<()> {
+        match self.ctx.config_path.as_deref() {
+            Some(x) => self.data.write_into(x),
+            None => self.data.write_into(Config::default_config_path()?),
+        }
     }
 }

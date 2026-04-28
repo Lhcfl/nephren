@@ -40,12 +40,3 @@ impl Context {
         .map(|data| WithContext { ctx: self, data })
     }
 }
-
-impl WithContext<'_, Config> {
-    pub fn save(&self) -> anyhow::Result<()> {
-        match self.ctx.config_path.as_deref() {
-            Some(x) => self.data.write_into(x),
-            None => self.data.write_into(Config::default_config_path()?),
-        }
-    }
-}

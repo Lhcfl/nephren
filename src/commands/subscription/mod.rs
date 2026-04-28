@@ -6,6 +6,7 @@ use enum_dispatch::enum_dispatch;
 pub mod add;
 pub mod list;
 pub mod pull;
+pub mod remove;
 
 #[derive(Debug, Args)]
 pub struct Subscription {
@@ -15,8 +16,13 @@ pub struct Subscription {
 
 #[derive(Debug, Subcommand)]
 pub enum Cmd {
+    /// List all subscriptions
     List(list::List),
+    /// Add a new subscription
     Add(add::Add),
+    /// Remove a subscription
+    Remove(remove::Remove),
+    /// Pull updates for a subscription
     Pull(pull::Pull),
 }
 
@@ -25,6 +31,7 @@ impl Exec for Subscription {
         match self.cmd {
             Cmd::List(x) => x.exec(ctx),
             Cmd::Add(x) => x.exec(ctx),
+            Cmd::Remove(x) => x.exec(ctx),
             Cmd::Pull(x) => x.exec(ctx),
         }
     }
