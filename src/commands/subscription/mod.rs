@@ -27,12 +27,12 @@ pub enum Cmd {
 }
 
 impl Exec for Subscription {
-    fn exec(self, ctx: Context) -> anyhow::Result<()> {
+    async fn exec(self, ctx: Context) -> anyhow::Result<()> {
         match self.cmd {
-            Cmd::List(x) => x.exec(ctx),
-            Cmd::Add(x) => x.exec(ctx),
-            Cmd::Remove(x) => x.exec(ctx),
-            Cmd::Pull(x) => x.exec(ctx),
+            Cmd::List(x) => x.exec(ctx).await,
+            Cmd::Add(x) => x.exec(ctx).await,
+            Cmd::Remove(x) => x.exec(ctx).await,
+            Cmd::Pull(x) => x.exec(ctx).await,
         }
     }
 }

@@ -11,7 +11,7 @@ pub struct Add {
 }
 
 impl Exec for Add {
-    fn exec(self, ctx: Context) -> anyhow::Result<()> {
+    async fn exec(self, ctx: Context) -> anyhow::Result<()> {
         let mut config = ctx.load_config()?;
 
         let next_id = config

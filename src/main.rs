@@ -6,6 +6,7 @@ use simple_logger::SimpleLogger;
 
 mod commands;
 mod context;
+mod lib;
 mod models;
 
 #[derive(Parser, Debug)]
@@ -17,7 +18,8 @@ struct Args {
     config_path: Option<PathBuf>,
 }
 
-fn main() -> anyhow::Result<()> {
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
     SimpleLogger::new()
         .with_colors(true)
         .without_timestamps()
@@ -31,5 +33,5 @@ fn main() -> anyhow::Result<()> {
 
     let ctx = Context { config_path };
 
-    cmd.exec(ctx)
+    cmd.exec(ctx).await
 }

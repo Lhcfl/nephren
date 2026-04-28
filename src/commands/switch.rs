@@ -9,7 +9,7 @@ pub struct Switch {
 }
 
 impl Exec for Switch {
-    fn exec(self, _ctx: Context) -> anyhow::Result<()> {
+    async fn exec(self, _ctx: Context) -> anyhow::Result<()> {
         error!("not implemented!");
         panic!("bad implement");
     }

@@ -1,5 +1,5 @@
-use crate::context::Context;
 use crate::commands::Exec;
+use crate::context::Context;
 use anyhow::bail;
 use clap::Args;
 
@@ -9,7 +9,7 @@ pub struct Remove {
 }
 
 impl Exec for Remove {
-    fn exec(self, ctx: Context) -> anyhow::Result<()> {
+    async fn exec(self, ctx: Context) -> anyhow::Result<()> {
         let mut config = ctx.load_config()?;
 
         let matched_index = config.find_subscription(&self.id_or_name);

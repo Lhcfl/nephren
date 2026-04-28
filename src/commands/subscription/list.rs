@@ -27,7 +27,7 @@ struct SubscriptionRow {
 }
 
 impl Exec for List {
-    fn exec(self, ctx: Context) -> anyhow::Result<()> {
+    async fn exec(self, ctx: Context) -> anyhow::Result<()> {
         let config = ctx.load_config()?;
 
         match self.style {

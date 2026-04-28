@@ -9,7 +9,7 @@ mod switch;
 #[enum_dispatch]
 pub trait Exec {
     /// execute the command
-    fn exec(self, ctx: Context) -> anyhow::Result<()>;
+    async fn exec(self, ctx: Context) -> anyhow::Result<()>;
 }
 
 #[derive(Subcommand, Debug)]

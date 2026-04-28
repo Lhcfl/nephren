@@ -29,15 +29,15 @@ pub enum Network {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VMess {
     /// user id, a 16-bytes random number, act as the token.
-    id: String,
-    alter_id: String,
-    security: Security,
-    mux: bool,
-    network: Network,
-    network_type: String,
-    host: String,
-    path: String,
-    v: String,
-    tls: Option<String>,
-    verify_cert: bool,
+    pub id: String,
+    pub alter_id: String,
+    pub security: Security,
+    pub mux: bool,
+    pub network: Network,
+    pub network_type: String,
+    pub host: String,
+    pub path: String,
+    pub v: String,
+    pub tls: Option<String>,
+    pub verify_cert: bool,
 }
