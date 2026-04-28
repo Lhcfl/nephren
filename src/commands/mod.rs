@@ -3,7 +3,8 @@ use enum_dispatch::enum_dispatch;
 
 use crate::context::Context;
 
-mod subscription;
+mod nodes;
+mod subscriptions;
 mod switch;
 
 #[enum_dispatch]
@@ -20,5 +21,9 @@ pub enum Command {
 
     /// Manage subscriptions
     #[command(visible_aliases(["sub", "s"]))]
-    Subscription(subscription::Subscription),
+    Subscriptions(subscriptions::Subscription),
+
+    /// Manage nodes
+    #[command(visible_aliases(["n"]))]
+    Nodes(nodes::Nodes),
 }

@@ -40,3 +40,12 @@ pub enum NodeKind {
     Unknown,
     VMess(vmess::VMess),
 }
+
+impl Display for NodeKind {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            NodeKind::Unknown => write!(f, "unknown"),
+            NodeKind::VMess(_) => write!(f, "vmess"),
+        }
+    }
+}
