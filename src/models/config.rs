@@ -1,12 +1,11 @@
 use std::{
     env,
     fs::{self, File, OpenOptions},
-    io::ErrorKind,
     path::{Path, PathBuf},
 };
 
 use anyhow::Context;
-use log::{debug, info};
+use log::debug;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -18,21 +17,13 @@ use crate::{
 };
 
 #[derive(Debug, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct Config {
     pub subscriptions: Vec<Subscription>,
     pub nodes: Vec<Node>,
     pub active_node: Option<NodeId>,
 }
 
-impl Default for Config {
-    fn default() -> Self {
-        Config {
-            subscriptions: vec![],
-            nodes: vec![],
-            active_node: None,
-        }
-    }
-}
 
 impl Config {
     pub fn load<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
@@ -65,12 +56,12 @@ impl Config {
 
     pub fn load_or_generate<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
         let path = path.as_ref();
-        if fs::exists(&path)? {
+        if fs::exists(path)? {
             debug!("config file exists at {path:?}, loading it");
-            Self::load(&path)
+            Self::load(path)
         } else {
             debug!("config file does not exist at {path:?}, generating it");
-            Self::generate(&path)
+            Self::generate(path)
         }
     }
 

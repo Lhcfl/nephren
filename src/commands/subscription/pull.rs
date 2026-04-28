@@ -1,9 +1,7 @@
 use crate::commands::Exec;
 use crate::context::Context;
 use anyhow::bail;
-use clap::{Args, Subcommand};
-use log::error;
-use tabled::grid::config;
+use clap::Args;
 
 #[derive(Debug, Args)]
 pub struct Pull {

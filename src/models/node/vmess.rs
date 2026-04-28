@@ -1,4 +1,4 @@
-use serde::{Deserialize, Serialize, ser};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Security {
@@ -30,7 +30,6 @@ pub enum Network {
 pub struct VMess {
     /// user id, a 16-bytes random number, act as the token.
     id: String,
-    /// 
     alter_id: String,
     security: Security,
     mux: bool,
@@ -40,5 +39,5 @@ pub struct VMess {
     path: String,
     v: String,
     tls: Option<String>,
-    verify_cert: bool,   
+    verify_cert: bool,
 }

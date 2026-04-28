@@ -1,7 +1,6 @@
 use crate::commands::Exec;
 use crate::context::Context;
 use clap::{Args, Subcommand};
-use enum_dispatch::enum_dispatch;
 
 pub mod add;
 pub mod list;

@@ -1,8 +1,6 @@
 use crate::context::Context;
 use crate::{commands::Exec, models::subscription::SubscriptionId};
-use anyhow::bail;
 use clap::{Args, ValueEnum};
-use log::error;
 use tabled::settings::Style;
 use tabled::{Table, Tabled};
 

@@ -1,8 +1,7 @@
 use crate::context::Context;
-use crate::{commands::Exec, models::subscription::Subscription};
+use crate::commands::Exec;
 use anyhow::bail;
-use clap::{Args, Subcommand};
-use log::error;
+use clap::Args;
 
 #[derive(Debug, Args)]
 pub struct Remove {

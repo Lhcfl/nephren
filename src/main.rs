@@ -1,8 +1,7 @@
-#[feature(try_blocks)]
 use std::path::PathBuf;
 
 use crate::{commands::Exec, context::Context};
-use clap::{Arg, Parser, builder::Str};
+use clap::Parser;
 use simple_logger::SimpleLogger;
 
 mod commands;
