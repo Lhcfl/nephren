@@ -3,6 +3,7 @@ use clap::Parser;
 use simple_logger::SimpleLogger;
 
 mod commands;
+mod models;
 
 #[derive(Parser, Debug)]
 struct Args {

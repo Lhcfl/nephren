@@ -12,6 +12,5 @@ impl Exec for Switch {
     fn exec(self) -> anyhow::Result<()> {
         error!("not implemented!");
         panic!("bad implement");
-        bail!("not implemented")
     }
 }
