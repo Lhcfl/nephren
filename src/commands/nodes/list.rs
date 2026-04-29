@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::context::Context;
 use crate::models::node::NodeId;
-use crate::{commands::Exec, models::subscription::SubscriptionId};
+use crate::commands::Exec;
 use clap::{Args, ValueEnum};
 use tabled::settings::Style;
 use tabled::{Table, Tabled};

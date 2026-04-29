@@ -20,9 +20,13 @@ impl NodeId {
     pub fn next(self) -> NodeId {
         NodeId(self.0 + 1)
     }
+
+    pub fn matches(&self, id_or_name: &str) -> bool {
+        self.0.to_string() == id_or_name
+    }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Node {
     pub id: NodeId,
     pub name: String,
@@ -35,7 +39,7 @@ pub struct Node {
     pub kind: NodeKind,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(tag = "kind_name")]
 pub enum NodeKind {
     Unknown,

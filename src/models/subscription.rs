@@ -4,7 +4,7 @@ use anyhow::bail;
 use log::info;
 use serde::{Deserialize, Serialize};
 
-use crate::{context::WithContext, inter::subscription::parse_base64_input, models::node::Node};
+use crate::{inter::subscription::parse_base64_input, models::node::Node};
 
 #[derive(
     Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default, Hash,

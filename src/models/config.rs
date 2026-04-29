@@ -81,6 +81,13 @@ impl Config {
             })
     }
 
+    pub fn find_node(&self, id_or_name: &str) -> Option<usize> {
+        self.nodes
+            .iter()
+            .position(|node| node.id.matches(id_or_name))
+            .or_else(|| self.nodes.iter().position(|node| node.name == id_or_name))
+    }
+
     pub fn replace_subscription_nodes(
         &mut self,
         subscription_id: SubscriptionId,

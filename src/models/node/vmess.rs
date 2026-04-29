@@ -1,7 +1,7 @@
 use anyhow::bail;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Security {
     #[serde(rename = "auto")]
     Auto,
@@ -30,7 +30,7 @@ impl TryFrom<String> for Security {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum Network {
     Tcp,
     Kcp,
@@ -60,7 +60,7 @@ impl TryFrom<String> for Network {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct VMess {
     /// user id, a 16-bytes random number, act as the token.
     pub id: String,

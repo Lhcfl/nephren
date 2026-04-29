@@ -1,11 +1,9 @@
-use std::ops::DerefMut;
 
 use crate::context::Context;
-use crate::models::config::Config;
-use crate::{commands::Exec, inter::subscription::parse_base64_input};
+use crate::commands::Exec;
 use anyhow::{Ok, bail};
 use clap::Args;
-use log::{info, warn};
+use log::warn;
 
 #[derive(Debug, Args)]
 pub struct Pull {
