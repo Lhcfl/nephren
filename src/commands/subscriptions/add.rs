@@ -32,6 +32,19 @@ impl Exec for Add {
 
         config.save()?;
 
+        let sub = config.subscriptions.last().unwrap();
+        let (nodes, faileds) = sub.pull().await?;
+        let sub_id = sub.id;
+        config.replace_subscription_nodes(sub_id, nodes);
+        config.save()?;
+
+        if faileds > 0 {
+            log::warn!(
+                "{} nodes failed to parse, but the rest have been added",
+                faileds
+            );
+        }
+
         Ok(())
     }
 }

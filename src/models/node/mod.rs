@@ -36,6 +36,7 @@ pub struct Node {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(tag = "kind_name")]
 pub enum NodeKind {
     Unknown,
     VMess(vmess::VMess),

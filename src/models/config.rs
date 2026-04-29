@@ -12,18 +12,16 @@ use crate::{
     context::WithContext,
     models::{
         node::{Node, NodeId},
-        subscription::Subscription,
+        subscription::{Subscription, SubscriptionId},
     },
 };
 
-#[derive(Debug, Serialize, Deserialize)]
-#[derive(Default)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Config {
     pub subscriptions: Vec<Subscription>,
     pub nodes: Vec<Node>,
     pub active_node: Option<NodeId>,
 }
-
 
 impl Config {
     pub fn load<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
@@ -81,6 +79,24 @@ impl Config {
                     .iter()
                     .position(|sub| sub.name == id_or_name)
             })
+    }
+
+    pub fn replace_subscription_nodes(
+        &mut self,
+        subscription_id: SubscriptionId,
+        mut new_nodes: Vec<Node>,
+    ) {
+        self.nodes.retain(|x| x.belongs_to != Some(subscription_id));
+
+        let mut last_id = self.nodes.iter().map(|x| x.id).max().unwrap_or_default();
+
+        for node in &mut new_nodes {
+            last_id = last_id.next();
+            node.id = last_id;
+            node.belongs_to = Some(subscription_id);
+        }
+
+        self.nodes.extend(new_nodes);
     }
 }
 
