@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{ops::Deref, path::PathBuf};
 
 use crate::{commands::Exec, context::Context};
 use clap::Parser;
@@ -9,8 +9,10 @@ mod context;
 mod inter;
 mod models;
 mod parse;
+mod theme;
 
 #[derive(Parser, Debug)]
+#[clap(styles = theme::CARGO_STYLING)]
 struct Args {
     #[command(subcommand)]
     cmd: commands::Command,
