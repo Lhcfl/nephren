@@ -7,6 +7,10 @@ mod nodes;
 mod subscriptions;
 mod switch;
 
+pub use nodes::Nodes;
+pub use subscriptions::Subscription;
+pub use switch::Switch;
+
 #[enum_dispatch]
 pub trait Exec {
     /// execute the command
@@ -17,13 +21,13 @@ pub trait Exec {
 #[enum_dispatch(Exec)]
 pub enum Command {
     /// Switch configs
-    Switch(switch::Switch),
+    Switch(Switch),
 
     /// Manage subscriptions
     #[command(visible_aliases(["sub", "s"]))]
-    Subscriptions(subscriptions::Subscription),
+    Subscriptions(Subscription),
 
     /// Manage nodes
     #[command(visible_aliases(["n"]))]
-    Nodes(nodes::Nodes),
+    Nodes(Nodes),
 }

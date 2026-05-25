@@ -2,8 +2,11 @@ use crate::commands::Exec;
 use crate::context::Context;
 use clap::{Args, Subcommand};
 
-pub mod activate;
-pub mod list;
+mod activate;
+mod list;
+
+pub use activate::Activate;
+pub use list::List;
 
 #[derive(Debug, Args)]
 pub struct Nodes {
@@ -14,10 +17,10 @@ pub struct Nodes {
 #[derive(Debug, Subcommand)]
 pub enum Cmd {
     /// List all nodes
-    List(list::List),
+    List(List),
     /// Activate a node
     #[command(visible_aliases(["active", "a"]))]
-    Activate(activate::Activate),
+    Activate(Activate),
 }
 
 impl Exec for Nodes {

@@ -2,13 +2,19 @@ use crate::commands::Exec;
 use crate::context::Context;
 use clap::{Args, Subcommand};
 
-pub mod add;
-pub mod list;
-pub mod pull;
-pub mod remove;
+mod add;
+mod list;
+mod pull;
+mod remove;
+
+pub use add::Add;
+pub use list::List;
+pub use pull::Pull;
+pub use remove::Remove;
 
 #[derive(Debug, Args)]
 pub struct Subscription {
+    // #[command(subcommand)]
     #[command(subcommand)]
     cmd: Cmd,
 }
@@ -16,14 +22,14 @@ pub struct Subscription {
 #[derive(Debug, Subcommand)]
 pub enum Cmd {
     /// List all subscriptions
-    List(list::List),
+    List(List),
     /// Add a new subscription
-    Add(add::Add),
+    Add(Add),
     /// Remove a subscription
     #[command(visible_aliases(["rm", "r"]))]
-    Remove(remove::Remove),
+    Remove(Remove),
     /// Pull updates for a subscription
-    Pull(pull::Pull),
+    Pull(Pull),
 }
 
 impl Exec for Subscription {

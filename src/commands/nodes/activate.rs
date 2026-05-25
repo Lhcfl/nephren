@@ -5,7 +5,7 @@ use clap::Args;
 
 #[derive(Debug, Args)]
 pub struct Activate {
-    id_or_name: String,
+    pub id_or_name: String,
 }
 
 impl Exec for Activate {

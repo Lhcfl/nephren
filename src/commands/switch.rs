@@ -1,7 +1,6 @@
-use crate::commands::Exec;
+use crate::commands::{self, Exec};
 use crate::context::Context;
 use clap::Args;
-use log::error;
 
 #[derive(Debug, Args)]
 pub struct Switch {
@@ -9,8 +8,11 @@ pub struct Switch {
 }
 
 impl Exec for Switch {
-    async fn exec(self, _ctx: Context) -> anyhow::Result<()> {
-        error!("not implemented!");
-        panic!("bad implement");
+    async fn exec(self, ctx: Context) -> anyhow::Result<()> {
+        commands::nodes::Activate {
+            id_or_name: self.id,
+        }
+        .exec(ctx)
+        .await
     }
 }
