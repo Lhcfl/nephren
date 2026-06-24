@@ -1,5 +1,8 @@
 use crate::models::protocol;
+use crate::models::security::Security;
 use crate::models::subscription::SubscriptionId;
+use crate::models::transport::StreamSettings;
+use log::error;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use url::Url;
@@ -31,17 +34,25 @@ pub struct Node {
     /// subscription ID this node belongs to, optional
     pub belongs_to: Option<SubscriptionId>,
     pub protocol: protocol::Protocol,
+    pub transport: StreamSettings,
+    pub security: Security,
 }
 
 impl Node {
     pub fn from_url(url: &Url) -> anyhow::Result<Node> {
         let (name, protocol) = protocol::Protocol::from_url(url)?;
 
+        error!("todo: parse transport and security from url");
+        let transport = StreamSettings::default();
+        let security = Security::default();
+
         Ok(Node {
             id: NodeId(0),
             name,
             belongs_to: None,
             protocol,
+            transport,
+            security,
         })
     }
 }
