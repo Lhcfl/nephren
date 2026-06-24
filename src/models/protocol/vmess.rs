@@ -1,4 +1,8 @@
+use anyhow::{Context, bail};
+use base64::prelude::*;
+use log::debug;
 use serde::{Deserialize, Serialize};
+use url::Url;
 
 use crate::models::protocol::ProtocolInfo;
 
@@ -34,6 +38,7 @@ pub struct Config {
     /// 这里只需要指定额外的 ID 的数量，推荐值为 0 代表启用 VMessAEAD。
     /// 不指定的话，默认值是 0。最大值 65535。这个值不能超过服务器端所指定的值。
     #[serde(default = "Config::default_alter_id")]
+    #[serde(rename = "alterId")]
     pub alter_id: u16,
     /// 用户等级
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -42,9 +47,49 @@ pub struct Config {
     pub security: Security,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct VMessShare {
+    ps: String,
+    #[serde(rename = "add")]
+    address: String,
+    port: String,
+    id: String,
+    #[serde(rename = "aid")]
+    alter_id: String,
+    #[serde(rename = "scy")]
+    security: Security,
+}
+
 impl Config {
     pub fn default_alter_id() -> u16 {
         0
+    }
+
+    pub fn parse_from_url(url: &Url) -> anyhow::Result<(String, Config)> {
+        let input = url.domain().context("no domain")?;
+        let decoded = BASE64_STANDARD.decode(input)?;
+        let decoded_str = String::from_utf8(decoded)?;
+        debug!("{}", decoded_str);
+
+        let VMessShare {
+            ps,
+            address,
+            port,
+            id,
+            alter_id,
+            security,
+        } = serde_json::from_str(&decoded_str)?;
+
+        let config = Config {
+            address: address,
+            port: port.parse()?,
+            id: id,
+            alter_id: alter_id.parse()?,
+            level: None,
+            security: security,
+        };
+
+        Ok((ps, config))
     }
 }
 

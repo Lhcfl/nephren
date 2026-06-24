@@ -22,10 +22,16 @@ impl Protocol {
         }
     }
 
-    pub fn from_url(url: &Url) -> anyhow::Result<Protocol> {
+    pub fn from_url(url: &Url) -> anyhow::Result<(String, Protocol)> {
         match url.scheme() {
-            "vmess" => bail!("not implemented"),
-            "vless" => Ok(Self::VLess(vless::Config::parse_from_url(url)?)),
+            "vmess" => {
+                let (name, config) = vmess::Config::parse_from_url(url)?;
+                Ok((name, Self::VMess(config)))
+            }
+            "vless" => {
+                let (name, config) = vless::Config::parse_from_url(url)?;
+                Ok((name, Self::VLess(config)))
+            }
             x => bail!("unknown scheme: {x}"),
         }
     }

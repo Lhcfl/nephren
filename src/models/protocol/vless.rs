@@ -67,10 +67,14 @@ impl VLessQueryParams {
 }
 
 impl Config {
-    pub fn parse_from_url(url: &Url) -> anyhow::Result<Config> {
+    pub fn parse_from_url(url: &Url) -> anyhow::Result<(String, Config)> {
         let q: VLessQueryParams = serde_qs::from_str(url.query().context("no query found")?)?;
 
-        Ok(Config {
+        let name = percent_encoding::percent_decode_str(url.fragment().unwrap_or("unnamed"))
+            .decode_utf8_lossy()
+            .to_string();
+
+        let config = Config {
             address: url.host_str().context("no address found")?.to_owned(),
             port: url.port().unwrap_or(443),
             id: url.username().to_owned(),
@@ -78,6 +82,8 @@ impl Config {
             flow: Flow::Empty,
             level: None,
             reverse: None,
-        })
+        };
+
+        Ok((name, config))
     }
 }

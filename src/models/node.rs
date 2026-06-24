@@ -37,13 +37,13 @@ pub struct Node {
 
 impl Node {
     pub fn from_url(url: &Url) -> anyhow::Result<Node> {
-        let name = percent_encoding::percent_decode_str(url.fragment().unwrap_or("unnamed"));
+        let (name, protocol) = protocol::Protocol::from_url(url)?;
 
         Ok(Node {
             id: NodeId(0),
-            name: name.decode_utf8_lossy().to_string(),
+            name,
             belongs_to: None,
-            protocol: protocol::Protocol::from_url(url)?,
+            protocol,
         })
     }
 }
