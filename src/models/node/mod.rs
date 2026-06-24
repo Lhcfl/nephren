@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::models::subscription::SubscriptionId;
 
+pub mod vless;
 pub mod vmess;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
