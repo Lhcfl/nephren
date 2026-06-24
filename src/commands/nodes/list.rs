@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 
+use crate::commands::Exec;
 use crate::context::Context;
 use crate::models::node::NodeId;
-use crate::commands::Exec;
+use crate::models::protocol::ProtocolInfo;
 use clap::{Args, ValueEnum};
 use tabled::settings::Style;
 use tabled::{Table, Tabled};
@@ -44,8 +45,8 @@ impl Exec for List {
                 let mut table = Table::new(config.nodes.iter().map(|row| NodeRow {
                     id: row.id,
                     name: row.name.clone(),
-                    kind: row.kind.to_string(),
-                    address: row.address.clone(),
+                    kind: row.protocol.name().to_owned(),
+                    address: row.protocol.address(),
                     group: match row.belongs_to {
                         Some(id) => group_map.get(&id).cloned().unwrap_or_default(),
                         None => Default::default(),

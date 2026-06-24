@@ -1,6 +1,5 @@
-
-use crate::context::Context;
 use crate::commands::Exec;
+use crate::context::Context;
 use anyhow::{Ok, bail};
 use clap::Args;
 use log::warn;

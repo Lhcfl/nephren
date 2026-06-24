@@ -1,7 +1,7 @@
 use base64::prelude::*;
 use log::error;
 
-use crate::{models::node::Node, parse::vmess::parse_vmess_link};
+use crate::models::node::Node;
 
 pub fn parse_base64_input(input: &str) -> anyhow::Result<(Vec<Node>, usize)> {
     let decoded = BASE64_STANDARD.decode(input)?;
@@ -31,7 +31,8 @@ pub fn parse_base64_input(input: &str) -> anyhow::Result<(Vec<Node>, usize)> {
 pub fn parse_link(input: &str) -> anyhow::Result<Node> {
     let input = input.trim();
     if input.starts_with("vmess://") {
-        parse_vmess_link(input)
+        anyhow::bail!("unsupported link type: {}", input);
+        // parse_vmess_link(input)
     } else {
         anyhow::bail!("unsupported link type: {}", input);
     }

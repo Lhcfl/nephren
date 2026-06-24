@@ -3,10 +3,12 @@ use enum_dispatch::enum_dispatch;
 
 use crate::context::Context;
 
+mod debug;
 mod nodes;
 mod subscriptions;
 mod switch;
 
+pub use debug::Debug;
 pub use nodes::Nodes;
 pub use subscriptions::Subscription;
 pub use switch::Switch;
@@ -30,4 +32,6 @@ pub enum Command {
     /// Manage nodes
     #[command(visible_aliases(["n"]))]
     Nodes(Nodes),
+
+    Debug(Debug),
 }

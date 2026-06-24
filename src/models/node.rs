@@ -1,11 +1,10 @@
-use std::fmt::Display;
-
-use serde::{Deserialize, Serialize};
-
+use crate::models::protocol;
 use crate::models::subscription::SubscriptionId;
-
-pub mod vless;
-pub mod vmess;
+use anyhow::bail;
+use log::debug;
+use serde::{Deserialize, Serialize};
+use std::fmt::Display;
+use url::Url;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 #[serde(transparent)]
@@ -31,27 +30,15 @@ impl NodeId {
 pub struct Node {
     pub id: NodeId,
     pub name: String,
-    /// server address, support domain name and IP address
-    pub address: String,
-    /// server port, required
-    pub port: u16,
     /// subscription ID this node belongs to, optional
     pub belongs_to: Option<SubscriptionId>,
-    pub kind: NodeKind,
+    pub protocol: protocol::Protocol,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(tag = "kind_name")]
-pub enum NodeKind {
-    Unknown,
-    VMess(vmess::VMess),
-}
+impl Node {
+    pub fn from_url(url: &Url) -> anyhow::Result<Node> {
+        debug!("query = {:?}", url.query());
 
-impl Display for NodeKind {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            NodeKind::Unknown => write!(f, "unknown"),
-            NodeKind::VMess(_) => write!(f, "vmess"),
-        }
+        bail!("not impl");
     }
 }
