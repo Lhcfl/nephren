@@ -1,4 +1,4 @@
-use anyhow::{Context, bail};
+use anyhow::Context;
 use base64::prelude::*;
 use log::debug;
 use serde::{Deserialize, Serialize};
@@ -81,12 +81,12 @@ impl Config {
         } = serde_json::from_str(&decoded_str)?;
 
         let config = Config {
-            address: address,
+            address,
             port: port.parse()?,
-            id: id,
+            id,
             alter_id: alter_id.parse()?,
             level: None,
-            security: security,
+            security,
         };
 
         Ok((ps, config))

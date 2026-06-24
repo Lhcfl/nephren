@@ -1,7 +1,5 @@
 use crate::models::protocol;
 use crate::models::subscription::SubscriptionId;
-use anyhow::bail;
-use log::debug;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use url::Url;

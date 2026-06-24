@@ -1,5 +1,5 @@
 use base64::prelude::*;
-use log::{debug, error};
+use log::debug;
 use url::Url;
 
 use crate::models::node::Node;
