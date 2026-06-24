@@ -15,10 +15,9 @@ pub fn parse(input: &str) -> anyhow::Result<()> {
         println!("\n=========== Parsed URL Information ============");
         println!("{url:#?}");
 
-        match url.scheme() {
-            "vless" | "vmess" => println!("{:#?}", "todo"),
-            x => error!("unknown scheme: {x}"),
-        }
+        let ret = Node::from_url(&url)?;
+        println!("\n=========== Result ============");
+        println!("{ret:#?}")
     } else {
         let text = parse_base64(input)?;
         println!("{text}");

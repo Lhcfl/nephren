@@ -1,5 +1,7 @@
+use anyhow::bail;
 use enum_dispatch::enum_dispatch;
 use serde::{Deserialize, Serialize};
+use url::Url;
 
 pub mod vless;
 pub mod vmess;
@@ -17,6 +19,14 @@ impl Protocol {
         match self {
             Self::VMess(_) => "vmess",
             Self::VLess(_) => "vless",
+        }
+    }
+
+    pub fn from_url(url: &Url) -> anyhow::Result<Protocol> {
+        match url.scheme() {
+            "vmess" => bail!("not implemented"),
+            "vless" => Ok(Self::VLess(vless::Config::parse_from_url(url)?)),
+            x => bail!("unknown scheme: {x}"),
         }
     }
 }

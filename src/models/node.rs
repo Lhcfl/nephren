@@ -37,8 +37,13 @@ pub struct Node {
 
 impl Node {
     pub fn from_url(url: &Url) -> anyhow::Result<Node> {
-        debug!("query = {:?}", url.query());
+        let name = percent_encoding::percent_decode_str(url.fragment().unwrap_or("unnamed"));
 
-        bail!("not impl");
+        Ok(Node {
+            id: NodeId(0),
+            name: name.decode_utf8_lossy().to_string(),
+            belongs_to: None,
+            protocol: protocol::Protocol::from_url(url)?,
+        })
     }
 }

@@ -804,6 +804,7 @@ dependencies = [
  "clap",
  "enum_dispatch",
  "log",
+ "percent-encoding",
  "reqwest",
  "serde",
  "serde_json",
