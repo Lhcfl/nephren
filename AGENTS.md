@@ -1,41 +1,47 @@
-# AGENTS.md
+# nephren — AGENTS.md
 
-## What this is
+CLI v2ray/xray config generator & subscription manager. Written in Rust (edition 2024).
 
-CLI tool for managing v2ray/xray proxy configs. Manages subscriptions (remote node lists), parses proxy links, and switches active nodes. Config lives at `~/.config/nephren/config.json`.
-
-## Build & check
+## Dev commands
 
 ```sh
-cargo build
-cargo clippy
-cargo fmt --check
+cargo run                          # run the CLI
+cargo build                        # debug build
+cargo build --release              # release build
+cargo clippy                       # lint (no clippy.toml)
+cargo fmt                          # format (uses rustfmt defaults)
 ```
 
-No test suite exists yet. Always run `cargo clippy` and `cargo fmt --check` before considering work done.
+- No test suite exists (no `tests/` dir, no `#[test]` in source).
+- No CI pipeline.
+- Nix flake available for dev shell (`nix develop`); drops into fish shell.
 
-## Dev environment
+## Config
 
-Nix flake provides the toolchain via fenix (Rust latest + clippy + rustfmt + cargo-deny + cargo-watch + rust-analyzer). Enter with `nix develop` (drops into fish). If not using Nix, Rust 2024 edition is required (`edition = "2024"` in Cargo.toml).
+- Stored as JSON at `~/.config/nephren/config.json`.
+- Fields: `subscriptions`, `nodes`, `active_node`.
+- `--config-path <PATH>` flag overrides location.
+- **Mutation safety**: `WithContext<T>` panics on drop if data was mutated but `save()` was not called. Always call `.save()` after mutating config.
 
-## Architecture
+## CLI subcommands
 
-- **Entry**: `src/main.rs` — clap `Parser`, logs to stderr via `simple_logger`, dispatches to `Command`
+```
+switch <id>                        # activate node by id or name (alias for `nodes activate`)
+subscriptions|sub|s  list|add|remove|rm|r|pull
+nodes|n              list|activate|active|a
+debug                parse
+```
 
-- **Commands** (`src/commands/`): `enum_dispatch` over `Exec` trait. Top-level: `Switch`, `Subscriptions`, `Nodes`. Each subcommand module has its own file.
+`list` commands support `--style table|json|rust` (default: table).
 
-- **Context** (`src/context.rs`): `Context` holds `config_path`. `WithContext<T>` wraps loaded data — **panics on drop if mutated but not saved** (via `DerefMut` setting a `Cell<bool>` flag). Always call `.save()` after mutating config through `WithContext`.
+## Protocols
 
-- **Models** (`src/models/`): `Config` (serde JSON), `Subscription` (id, name, url), `Node` (id, name, address, port, `NodeKind`). IDs are `i32` newtypes with `.next()` for incrementing.
+Only **vmess** and **vless** are implemented via `enum_dispatch`. vmess URL parsing is broken (`share/subscription.rs:parse_link` explicitly bails on `vmess://` links despite having a `vmess` parser). vless uses `serde_qs` for query params.
 
-- **Parse** (`src/parse/`): Only `vmess://` links are supported. `vless.rs` is a stub.
+## Architecture notes
 
-- **share** (`src/share/`): `parse_base64_input` decodes base64 subscription body, dispatches each line to `parse_link`.
-
-## Key conventions
-
-- `Switch` is an alias for `Nodes::Activate` — same logic, different CLI surface.
-- Subscription aliases: `sub`, `s`. Node aliases: `n`. Activate aliases: `active`, `a`. Remove aliases: `rm`, `r`.
-- List commands support `--style table|json|rust` (default: table, rendered with `tabled`).
-- Node lookup and subscription lookup accept both numeric ID and name string.
-- `NodeKind` is tagged enum with `#[serde(tag = "kind_name")]`. Adding a new protocol requires updating `NodeKind`, `Display`, `parse_link`, and adding a model + parser module.
+- Entrypoint: `src/main.rs` — clap derive, tokio runtime, `simple_logger` (timestamps off, colors on).
+- `enum_dispatch(Exec)` on the `Command` enum replaces dynamic dispatch — every subcommand struct impls `Exec`.
+- Node/subscription lookup by id (exact string match) **or** name.
+- Subscription fetch → base64 decode → line-by-line link parsing.
+- `src/share/` holds utility code (`parse` for debug, base64 decoding).
