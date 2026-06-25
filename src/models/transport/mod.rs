@@ -9,6 +9,7 @@ pub mod kcp;
 pub mod quic;
 pub mod tcp;
 pub mod ws;
+pub mod xhttp;
 
 /// Transport 包含网络类型及其对应的传输设置
 ///
@@ -30,6 +31,8 @@ pub enum Transport {
     Quic(quic::Config),
     #[serde(rename = "grpc")]
     Grpc(grpc::Config),
+    #[serde(rename = "xhttp")]
+    Xhttp(xhttp::Config),
 }
 
 impl Default for Transport {
