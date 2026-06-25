@@ -1,7 +1,5 @@
-use anyhow::Context;
 use serde::{Deserialize, Serialize};
 use serde_json;
-use url::Url;
 
 use crate::models::protocol::ProtocolInfo;
 

@@ -18,7 +18,7 @@ pub trait ProtocolInfo {
 }
 
 impl Protocol {
-    pub fn kind(self: &Self) -> &'static str {
+    pub fn kind(&self) -> &'static str {
         match self {
             Self::VLess(_) => "vless",
             Self::VMess(_) => "vmess",

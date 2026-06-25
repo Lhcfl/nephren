@@ -1,6 +1,6 @@
 use anyhow::{Context, bail};
 use base64::prelude::*;
-use log::{debug, error};
+use log::debug;
 /// vless share link parser
 use serde::{Deserialize, Serialize};
 use url::Url;
@@ -9,11 +9,10 @@ use crate::models::{
     node::{Node, NodeId},
     protocol::{
         Protocol,
-        vless::{Config, Flow},
         vmess,
     },
     security::{self, tls},
-    transport::{self, StreamSettings, Transport, tcp, ws},
+    transport::{StreamSettings, Transport, tcp, ws},
 };
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -57,13 +56,13 @@ pub fn parse_vmess_url(url: &Url) -> anyhow::Result<Node> {
         alter_id,
         vmess_security,
         net,
-        kind,
+        kind: _,
         host,
         path,
         tls,
-        sni,
+        sni: _,
         alpn,
-        fingerprint: fp,
+        fingerprint: _fp,
         insecure,
     } = serde_json::from_str(&decoded_str)?;
 
@@ -83,7 +82,7 @@ pub fn parse_vmess_url(url: &Url) -> anyhow::Result<Node> {
         x => bail!("not implemented: {x} {decoded_str}"),
     };
 
-    let security = if tls == "" {
+    let security = if tls.is_empty() {
         security::Security::None
     } else if tls == "tls" {
         security::Security::Tls(tls::Config {

@@ -3,10 +3,7 @@ use base64::prelude::*;
 use log::debug;
 use url::Url;
 
-use crate::{
-    models::node::Node,
-    share::{vless::parse_vless_url, vmess::parse_vmess_url},
-};
+use crate::share::{vless::parse_vless_url, vmess::parse_vmess_url};
 
 pub mod subscription;
 mod vless;

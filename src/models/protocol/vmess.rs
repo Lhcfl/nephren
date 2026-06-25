@@ -1,8 +1,4 @@
-use anyhow::Context;
-use base64::prelude::*;
-use log::debug;
 use serde::{Deserialize, Serialize};
-use url::Url;
 
 use crate::models::protocol::ProtocolInfo;
 

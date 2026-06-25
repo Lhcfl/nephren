@@ -1,5 +1,4 @@
 use anyhow::{Context, bail};
-use log::error;
 /// vless share link parser
 use serde::{Deserialize, Serialize};
 use url::Url;
@@ -42,7 +41,7 @@ enum UrlShareSecurity {
     #[serde(rename = "")]
     None,
     #[serde(rename = "tls")]
-    TLS,
+    Tls,
     #[serde(rename = "reality")]
     Reality,
 }
@@ -62,23 +61,23 @@ impl VLessQueryParams {
 impl TryFrom<&VLessQueryParams> for Transport {
     type Error = anyhow::Error;
     fn try_from(value: &VLessQueryParams) -> anyhow::Result<Self> {
-        return Ok(match value.transport {
+        Ok(match value.transport {
             XHttp => Transport::Xhttp(xhttp::Config {
                 host: value.host.clone(),
                 path: value.path.clone(),
                 mode: serde_json::from_value(value.mode.clone().into())?,
                 ..Default::default()
             }),
-        });
+        })
     }
 }
 
 impl TryFrom<&VLessQueryParams> for Security {
     type Error = anyhow::Error;
     fn try_from(value: &VLessQueryParams) -> anyhow::Result<Self> {
-        return Ok(match value.security {
+        Ok(match value.security {
             UrlShareSecurity::None => Self::None,
-            UrlShareSecurity::TLS => Self::Tls(tls::Config {
+            UrlShareSecurity::Tls => Self::Tls(tls::Config {
                 server_name: value.sni.clone(),
                 alpn: vec![],
                 allow_insecure: false,
@@ -88,7 +87,7 @@ impl TryFrom<&VLessQueryParams> for Security {
                 pinned_peer_certificate_chain_sha256: None,
             }),
             UrlShareSecurity::Reality => bail!("reality is not implemented"),
-        });
+        })
     }
 }
 
@@ -108,7 +107,7 @@ pub fn parse_vless_url(url: &Url) -> anyhow::Result<Node> {
         port: url.port().unwrap_or(443),
         id: url.username().to_owned(),
         encryption: encryption.to_owned(),
-        flow: flow.clone(),
+        flow: *flow,
         level: None,
         reverse: None,
     };

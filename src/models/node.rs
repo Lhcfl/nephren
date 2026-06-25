@@ -1,11 +1,8 @@
 use crate::models::protocol;
-use crate::models::security::Security;
 use crate::models::subscription::SubscriptionId;
 use crate::models::transport::StreamSettings;
-use log::error;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-use url::Url;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 #[serde(transparent)]
