@@ -1,10 +1,16 @@
+use anyhow::bail;
 use base64::prelude::*;
 use log::debug;
 use url::Url;
 
-use crate::models::node::Node;
+use crate::{
+    models::node::Node,
+    share::{vless::parse_vless_url, vmess::parse_vmess_url},
+};
 
 pub mod subscription;
+mod vless;
+mod vmess;
 
 pub fn parse(input: &str) -> anyhow::Result<()> {
     let is_url = input.contains("://");
@@ -15,9 +21,13 @@ pub fn parse(input: &str) -> anyhow::Result<()> {
         println!("\n=========== Parsed URL Information ============");
         println!("{url:#?}");
 
-        let ret = Node::from_url(&url)?;
+        let node = match url.scheme() {
+            "vless" => parse_vless_url(&url),
+            "vmess" => parse_vmess_url(&url),
+            x => bail!("no such scheme: {x}"),
+        };
         println!("\n=========== Result ============");
-        println!("{ret:#?}")
+        println!("{node:#?}")
     } else {
         let text = parse_base64(input)?;
         println!("{text}");

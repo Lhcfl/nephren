@@ -1,7 +1,5 @@
-use anyhow::bail;
 use enum_dispatch::enum_dispatch;
 use serde::{Deserialize, Serialize};
-use url::Url;
 
 pub mod vless;
 pub mod vmess;
@@ -14,30 +12,16 @@ pub enum Protocol {
     VLess(vless::Config),
 }
 
-impl Protocol {
-    pub fn name(&self) -> &'static str {
-        match self {
-            Self::VMess(_) => "vmess",
-            Self::VLess(_) => "vless",
-        }
-    }
-
-    pub fn from_url(url: &Url) -> anyhow::Result<(String, Protocol)> {
-        match url.scheme() {
-            "vmess" => {
-                let (name, config) = vmess::Config::parse_from_url(url)?;
-                Ok((name, Self::VMess(config)))
-            }
-            "vless" => {
-                let (name, config) = vless::Config::parse_from_url(url)?;
-                Ok((name, Self::VLess(config)))
-            }
-            x => bail!("unknown scheme: {x}"),
-        }
-    }
-}
-
 #[enum_dispatch]
 pub trait ProtocolInfo {
     fn address(&self) -> String;
+}
+
+impl Protocol {
+    pub fn kind(self: &Self) -> &'static str {
+        match self {
+            Self::VLess(_) => "vless",
+            Self::VMess(_) => "vmess",
+        }
+    }
 }

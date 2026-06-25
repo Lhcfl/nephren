@@ -45,7 +45,7 @@ impl Exec for List {
                 let mut table = Table::new(config.nodes.iter().map(|row| NodeRow {
                     id: row.id,
                     name: row.name.clone(),
-                    kind: row.protocol.name().to_owned(),
+                    kind: row.protocol.kind().to_owned(),
                     address: row.protocol.address(),
                     group: match row.belongs_to {
                         Some(id) => group_map.get(&id).cloned().unwrap_or_default(),

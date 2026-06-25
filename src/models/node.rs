@@ -9,7 +9,7 @@ use url::Url;
 
 #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 #[serde(transparent)]
-pub struct NodeId(i32);
+pub struct NodeId(pub i32);
 
 impl Display for NodeId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -35,24 +35,4 @@ pub struct Node {
     pub belongs_to: Option<SubscriptionId>,
     pub protocol: protocol::Protocol,
     pub transport: StreamSettings,
-    pub security: Security,
-}
-
-impl Node {
-    pub fn from_url(url: &Url) -> anyhow::Result<Node> {
-        let (name, protocol) = protocol::Protocol::from_url(url)?;
-
-        error!("todo: parse transport and security from url");
-        let transport = StreamSettings::default();
-        let security = Security::default();
-
-        Ok(Node {
-            id: NodeId(0),
-            name,
-            belongs_to: None,
-            protocol,
-            transport,
-            security,
-        })
-    }
 }

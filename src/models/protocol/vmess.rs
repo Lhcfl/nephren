@@ -47,49 +47,9 @@ pub struct Config {
     pub security: Security,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-struct VMessShare {
-    ps: String,
-    #[serde(rename = "add")]
-    address: String,
-    port: String,
-    id: String,
-    #[serde(rename = "aid")]
-    alter_id: String,
-    #[serde(rename = "scy")]
-    security: Security,
-}
-
 impl Config {
     pub fn default_alter_id() -> u16 {
         0
-    }
-
-    pub fn parse_from_url(url: &Url) -> anyhow::Result<(String, Config)> {
-        let input = url.domain().context("no domain")?;
-        let decoded = BASE64_STANDARD.decode(input)?;
-        let decoded_str = String::from_utf8(decoded)?;
-        debug!("{}", decoded_str);
-
-        let VMessShare {
-            ps,
-            address,
-            port,
-            id,
-            alter_id,
-            security,
-        } = serde_json::from_str(&decoded_str)?;
-
-        let config = Config {
-            address,
-            port: port.parse()?,
-            id,
-            alter_id: alter_id.parse()?,
-            level: None,
-            security,
-        };
-
-        Ok((ps, config))
     }
 }
 
