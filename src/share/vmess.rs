@@ -73,16 +73,12 @@ pub fn parse_vmess_url(url: &Url) -> anyhow::Result<Node> {
 
     let transport = match net.as_str() {
         "tcp" => Transport::Tcp(tcp::Config {
-            accept_proxy_protocol: false,
             header: None,
+            ..Default::default()
         }),
         "ws" => Transport::Ws(ws::Config {
-            accept_proxy_protocol: false,
             path,
-            headers: None,
-            max_early_data: None,
-            use_browser_forwarding: false,
-            early_data_header_name: None,
+            ..Default::default()
         }),
         x => bail!("not implemented: {x} {decoded_str}"),
     };

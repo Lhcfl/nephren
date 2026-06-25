@@ -67,7 +67,7 @@ impl TryFrom<&VLessQueryParams> for Transport {
                 host: value.host.clone(),
                 path: value.path.clone(),
                 mode: serde_json::from_value(value.mode.clone().into())?,
-                headers: None,
+                ..Default::default()
             }),
         });
     }

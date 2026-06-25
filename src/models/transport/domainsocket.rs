@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Config {
     pub path: String,
-    #[serde(rename = "abstract", default)]
-    pub abstract_: bool,
-    #[serde(default)]
-    pub padding: bool,
+    #[serde(rename = "abstract", skip_serializing_if = "Option::is_none")]
+    pub abstract_: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub padding: Option<bool>,
 }

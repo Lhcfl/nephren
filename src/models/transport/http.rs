@@ -7,18 +7,10 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub host: Option<Vec<String>>,
-    #[serde(default = "default_path")]
-    pub path: String,
-    #[serde(default = "default_method")]
-    pub method: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub method: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub headers: Option<HashMap<String, Vec<String>>>,
-}
-
-fn default_path() -> String {
-    "/".to_owned()
-}
-
-fn default_method() -> String {
-    "PUT".to_owned()
 }

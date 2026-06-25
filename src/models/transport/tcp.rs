@@ -5,8 +5,8 @@ use serde::{Deserialize, Serialize};
 /// TcpObject 对应传输配置的 tcpSettings 项
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Config {
-    #[serde(rename = "acceptProxyProtocol")]
-    pub accept_proxy_protocol: bool,
+    #[serde(rename = "acceptProxyProtocol", skip_serializing_if = "Option::is_none")]
+    pub accept_proxy_protocol: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub header: Option<TcpHeader>,
 }
