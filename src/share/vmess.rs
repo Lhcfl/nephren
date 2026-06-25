@@ -12,8 +12,8 @@ use crate::models::{
         vless::{Config, Flow},
         vmess,
     },
-    security,
-    transport::{self, StreamSettings, Transport},
+    security::{self, tls},
+    transport::{self, StreamSettings, Transport, tcp, ws},
 };
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -30,14 +30,14 @@ struct VMessShare {
     vmess_security: vmess::Security,
     net: String,
     #[serde(rename = "type")]
-    transport_security: String,
+    kind: String,
     host: String,
     path: String,
     tls: String,
-    sni: String,
+    sni: Option<String>,
     alpn: String,
     #[serde(rename = "fp")]
-    fingerprint: String,
+    fingerprint: Option<String>,
     insecure: String,
 }
 
@@ -45,6 +45,8 @@ pub fn parse_vmess_url(url: &Url) -> anyhow::Result<Node> {
     let input = url.domain().context("no domain")?;
     let decoded = BASE64_STANDARD.decode(input)?;
     let decoded_str = String::from_utf8(decoded)?;
+
+    debug!("decoded str: {decoded_str}");
 
     let VMessShare {
         v,
@@ -55,7 +57,7 @@ pub fn parse_vmess_url(url: &Url) -> anyhow::Result<Node> {
         alter_id,
         vmess_security,
         net,
-        transport_security,
+        kind,
         host,
         path,
         tls,
@@ -70,16 +72,35 @@ pub fn parse_vmess_url(url: &Url) -> anyhow::Result<Node> {
     }
 
     let transport = match net.as_str() {
-        "tcp" => Transport::Tcp(transport::tcp::Config {
+        "tcp" => Transport::Tcp(tcp::Config {
             accept_proxy_protocol: false,
             header: None,
+        }),
+        "ws" => Transport::Ws(ws::Config {
+            accept_proxy_protocol: false,
+            path,
+            headers: None,
+            max_early_data: None,
+            use_browser_forwarding: false,
+            early_data_header_name: None,
         }),
         x => bail!("not implemented: {x} {decoded_str}"),
     };
 
-    let security = match transport_security.as_str() {
-        "none" => security::Security::None,
-        x => bail!("not implemented: {x} {decoded_str}"),
+    let security = if tls == "" {
+        security::Security::None
+    } else if tls == "tls" {
+        security::Security::Tls(tls::Config {
+            server_name: Some(host),
+            alpn: vec![alpn],
+            allow_insecure: insecure != "0",
+            disable_system_root: false,
+            certificates: vec![],
+            verify_client_certificate: false,
+            pinned_peer_certificate_chain_sha256: None,
+        })
+    } else {
+        bail!("not implemented: tls={tls} {decoded_str}")
     };
 
     let config = vmess::Config {

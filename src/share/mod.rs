@@ -25,7 +25,7 @@ pub fn parse(input: &str) -> anyhow::Result<()> {
             "vless" => parse_vless_url(&url),
             "vmess" => parse_vmess_url(&url),
             x => bail!("no such scheme: {x}"),
-        };
+        }?;
         println!("\n=========== Result ============");
         println!("{node:#?}")
     } else {

@@ -12,11 +12,11 @@ pub struct Config {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub headers: Option<HashMap<String, String>>,
     #[serde(rename = "maxEarlyData")]
-    pub max_early_data: u32,
+    pub max_early_data: Option<u32>,
     #[serde(rename = "useBrowserForwarding")]
     pub use_browser_forwarding: bool,
-    #[serde(rename = "earlyDataHeaderName", default)]
-    pub early_data_header_name: String,
+    #[serde(rename = "earlyDataHeaderName")]
+    pub early_data_header_name: Option<String>,
 }
 
 fn default_path() -> String {
