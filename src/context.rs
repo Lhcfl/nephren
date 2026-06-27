@@ -6,18 +6,27 @@ use std::{
 
 use anyhow::Context as _;
 
-use crate::models::config::Config;
+use crate::models::state::State;
 
 pub struct Context {
-    pub config_path: Option<PathBuf>,
+    pub state_path: Option<PathBuf>,
 }
 
 pub struct WithContext<'a, T> {
     pub ctx: &'a Context,
-    pub data: T,
+    data: T,
     /// mark whether the data is used mutably, if so, it should be saved before drop
     /// so we won't forget to save the data after mutating it
     pub mut_mark: Cell<bool>,
+}
+
+impl<T> WithContext<'_, T> {
+    pub fn save_data_by<F>(&self, f: F) -> anyhow::Result<()>
+    where
+        F: FnOnce(&T) -> anyhow::Result<()>,
+    {
+        f(&self.data)
+    }
 }
 
 impl<T> Deref for WithContext<'_, T> {
@@ -52,12 +61,12 @@ impl Context {
         }
     }
 
-    pub fn load_config(&self) -> anyhow::Result<WithContext<'_, Config>> {
-        match &self.config_path {
-            Some(x) => Config::load(x),
-            None => Config::load_or_generate(Config::default_config_path()?),
+    pub fn load_state(&self) -> anyhow::Result<WithContext<'_, State>> {
+        match &self.state_path {
+            Some(x) => State::load(x),
+            None => State::load_or_generate(State::default_path()?),
         }
-        .context("cannot load config")
+        .context("cannot load state")
         .map(|data| self.wrap(data))
     }
 }

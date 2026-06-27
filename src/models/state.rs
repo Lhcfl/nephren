@@ -17,22 +17,22 @@ use crate::{
 };
 
 #[derive(Debug, Serialize, Deserialize, Default)]
-pub struct Config {
+pub struct State {
     pub subscriptions: Vec<Subscription>,
     pub nodes: Vec<Node>,
     pub active_node: Option<NodeId>,
 }
 
-impl Config {
-    pub fn load<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
+impl State {
+    pub fn load<P: AsRef<Path>>(path: P) -> anyhow::Result<State> {
         let path = path.as_ref();
         let file = File::open(path)?;
         Ok(serde_json::from_reader(file)?)
     }
 
-    pub fn generate<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
+    pub fn generate<P: AsRef<Path>>(path: P) -> anyhow::Result<State> {
         let path = path.as_ref();
-        let config = Config::default();
+        let config = State::default();
         config.write_into(path)?;
         Ok(config)
     }
@@ -52,7 +52,7 @@ impl Config {
         Ok(())
     }
 
-    pub fn load_or_generate<P: AsRef<Path>>(path: P) -> anyhow::Result<Config> {
+    pub fn load_or_generate<P: AsRef<Path>>(path: P) -> anyhow::Result<State> {
         let path = path.as_ref();
         if fs::exists(path)? {
             debug!("config file exists at {path:?}, loading it");
@@ -63,7 +63,7 @@ impl Config {
         }
     }
 
-    pub fn default_config_path() -> anyhow::Result<PathBuf> {
+    pub fn default_path() -> anyhow::Result<PathBuf> {
         let ret = env::home_dir()
             .context("failed to get your home dir. your system may not be supported.")?
             .join(".config/nephren/config.json");
@@ -107,13 +107,13 @@ impl Config {
     }
 }
 
-impl WithContext<'_, Config> {
+impl WithContext<'_, State> {
     pub fn save(&self) -> anyhow::Result<()> {
         self.mut_mark.set(false);
 
-        match self.ctx.config_path.as_deref() {
-            Some(x) => self.data.write_into(x),
-            None => self.data.write_into(Config::default_config_path()?),
+        match self.ctx.state_path.as_deref() {
+            Some(x) => self.save_data_by(|data| data.write_into(x)),
+            None => self.save_data_by(|data| data.write_into(State::default_path()?)),
         }
     }
 }

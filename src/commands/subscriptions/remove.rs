@@ -10,7 +10,7 @@ pub struct Remove {
 
 impl Exec for Remove {
     async fn exec(self, ctx: Context) -> anyhow::Result<()> {
-        let mut config = ctx.load_config()?;
+        let mut config = ctx.load_state()?;
 
         let matched_index = config.find_subscription(&self.id_or_name);
 

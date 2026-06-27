@@ -11,7 +11,7 @@ pub struct Pull {
 
 impl Exec for Pull {
     async fn exec(self, ctx: Context) -> anyhow::Result<()> {
-        let mut config = ctx.load_config()?;
+        let mut config = ctx.load_state()?;
         let matched_index = config.find_subscription(&self.id_or_name);
         if let Some(index) = matched_index {
             let matched = &config.subscriptions[index];

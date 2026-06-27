@@ -4,6 +4,7 @@ use crate::{commands::Exec, context::Context};
 use clap::Parser;
 use simple_logger::SimpleLogger;
 
+mod actions;
 mod commands;
 mod context;
 mod models;
@@ -29,7 +30,7 @@ struct Args {
     cmd: commands::Command,
 
     #[arg(short, long)]
-    config_path: Option<PathBuf>,
+    state_path: Option<PathBuf>,
 }
 
 #[tokio::main]
@@ -40,12 +41,7 @@ async fn main() -> anyhow::Result<()> {
         .init()
         .expect("failed to init the logger");
 
-    let args = Args::parse();
-    println!("{args:?}");
-
-    let Args { cmd, config_path } = args;
-
-    let ctx = Context { config_path };
-
+    let Args { cmd, state_path } = Args::parse();
+    let ctx = Context { state_path };
     cmd.exec(ctx).await
 }

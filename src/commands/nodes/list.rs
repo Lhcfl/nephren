@@ -32,7 +32,7 @@ struct NodeRow {
 
 impl Exec for List {
     async fn exec(self, ctx: Context) -> anyhow::Result<()> {
-        let config = ctx.load_config()?;
+        let config = ctx.load_state()?;
 
         let mut group_map = HashMap::new();
 

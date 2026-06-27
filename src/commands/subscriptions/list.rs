@@ -28,7 +28,7 @@ struct SubscriptionRow {
 
 impl Exec for List {
     async fn exec(self, ctx: Context) -> anyhow::Result<()> {
-        let config = ctx.load_config()?;
+        let config = ctx.load_state()?;
 
         match self.style {
             ListStyle::Table => {
