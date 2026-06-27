@@ -5,6 +5,7 @@ use url::Url;
 
 use crate::share::{vless::parse_vless_url, vmess::parse_vmess_url};
 
+mod node;
 pub mod subscription;
 mod vless;
 mod vmess;
