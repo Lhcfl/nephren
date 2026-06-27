@@ -70,7 +70,7 @@
             };
 
             shellHook = ''
-              exec fish
+              # exec fish
             '';
           };
         }
