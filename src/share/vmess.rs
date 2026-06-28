@@ -38,11 +38,15 @@ struct VMessShare {
     insecure: String,
 }
 
-pub fn parse_vmess_url(url: &Url) -> anyhow::Result<Node> {
-    let input = url.domain().context("no domain")?;
+pub fn parse(input: &str) -> anyhow::Result<Node> {
+    let base64_str = input
+        .strip_prefix("vmess://")
+        .context("is not a vmess share link")?;
+
     let decoded = BASE64_STANDARD
-        .decode(input)
+        .decode(base64_str)
         .context("is not a valid base64")?;
+
     let decoded_str = String::from_utf8(decoded)?;
 
     debug!("decoded str: {decoded_str}");

@@ -91,7 +91,12 @@ impl TryFrom<&VLessQueryParams> for Security {
     }
 }
 
-pub fn parse_vless_url(url: &Url) -> anyhow::Result<Node> {
+pub fn parse(input: &str) -> anyhow::Result<Node> {
+    let url = Url::parse(input)?;
+    parse_url(&url)
+}
+
+pub fn parse_url(url: &Url) -> anyhow::Result<Node> {
     let q: VLessQueryParams = serde_qs::from_str(url.query().context("no query found")?)?;
 
     let name = percent_encoding::percent_decode_str(url.fragment().unwrap_or("unnamed"))

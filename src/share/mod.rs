@@ -3,8 +3,6 @@ use base64::prelude::*;
 use log::debug;
 use url::Url;
 
-use crate::share::{vless::parse_vless_url, vmess::parse_vmess_url};
-
 mod node;
 pub mod subscription;
 mod vless;
@@ -19,11 +17,7 @@ pub fn parse(input: &str) -> anyhow::Result<()> {
         println!("\n=========== Parsed URL Information ============");
         println!("{url:#?}");
 
-        let node = match url.scheme() {
-            "vless" => parse_vless_url(&url),
-            "vmess" => parse_vmess_url(&url),
-            x => bail!("no such scheme: {x}"),
-        }?;
+        let node = node::parse(input)?;
         println!("\n=========== Result ============");
         println!("{node:#?}")
     } else {
