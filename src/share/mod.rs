@@ -1,4 +1,3 @@
-use anyhow::bail;
 use base64::prelude::*;
 use log::debug;
 use url::Url;

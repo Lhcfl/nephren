@@ -1,9 +1,5 @@
-use anyhow::bail;
 
-use crate::models::{
-    node::Node,
-    subscription::{Subscription, SubscriptionId},
-};
+use crate::models::subscription::{Subscription, SubscriptionId};
 
 pub trait ConfigAction {
     fn find_next_id(&self) -> SubscriptionId;

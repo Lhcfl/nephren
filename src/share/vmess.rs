@@ -3,7 +3,6 @@ use base64::prelude::*;
 use log::debug;
 /// vless share link parser
 use serde::{Deserialize, Serialize};
-use url::Url;
 
 use crate::models::{
     node::{Node, NodeId},

@@ -34,7 +34,7 @@ impl Exec for Add {
                 }
             }
             Err(e) => {
-                info!("{} seems like not a url: {e}", &self.name_or_url);
+                info!("{} seems like not a url: {e}", self.name_or_url);
 
                 Subscription {
                     id: next_id,
